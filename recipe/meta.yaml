@@ -6,13 +6,13 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: a605d545ca4153c38b82c994729b1bc11b7d23bff4226e45440bbbc1881df8a5
 
 build:
   noarch: python
-  number: 0
-  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - bumpversion = bumpversion:main
     - bump2version = bumpversion:main
@@ -20,10 +20,11 @@ build:
 
 requirements:
   host:
-    - python
+    - python {{ python_min }}
+    - setuptools
     - pip
   run:
-    - python
+    - python >={{ python_min }}
 
 test:
   # Cannot run tests since they're not installed with the package and
@@ -33,6 +34,8 @@ test:
   #   - mock
   # commands:
   #   - py.test
+  requires:
+    - python {{ python_min }}
   imports:
     - bumpversion
   commands:
